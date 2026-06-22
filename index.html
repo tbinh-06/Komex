@@ -34,10 +34,10 @@ nav button .ic{opacity:.85;font-size:15px;width:18px;text-align:center}
 .refresh{font-size:11px;color:#7d92b4;padding:0 4px}
 .page{display:none}.page.on{display:block}
 @media(max-width:880px){.side{position:static;width:auto;flex:1 1 auto;flex-direction:column}.main{margin-left:0}.shell{flex-direction:column}}
-.fbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:10px 14px;margin:16px 0;justify-content:flex-end}
+.fbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--border);border-radius:11px;padding:10px 14px;margin:16px 0;justify-content:flex-start}
 .fbar label{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.04em;margin-right:2px}
 .fbar .grp{display:flex;align-items:center;gap:6px}
-.fbar .reset{font:inherit;font-size:12.5px;color:var(--muted);background:var(--panel2);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;cursor:pointer}
+.fbar .reset{margin-left:auto;font:inherit;font-size:12.5px;color:var(--muted);background:var(--panel2);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;cursor:pointer}
 .fbar .reset:hover{border-color:var(--primary);color:var(--text)}
 .fbanner{display:none;align-items:center;gap:10px;flex-wrap:wrap;background:var(--primary-s);border:1px solid #b9d0fb;border-radius:9px;padding:9px 13px;margin:0 0 16px;font-size:13px;color:#1d4ed8}
 .fbanner.on{display:flex}.fbanner b{color:#173a8a}
@@ -53,6 +53,8 @@ nav button .ic{opacity:.85;font-size:15px;width:18px;text-align:center}
 .kpi.clk{cursor:pointer}.kpi.clk:hover{border-color:var(--primary)}
 .up{color:var(--danger)}.down{color:var(--success)}.ok{color:var(--success)}.warn{color:var(--warning)}.bad{color:var(--danger)}.neu{color:var(--muted)}
 .row2{display:grid;grid-template-columns:1.5fr 1fr;gap:22px;margin-bottom:26px;align-items:start}
+.row3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-bottom:26px;align-items:start}
+@media(max-width:1080px){.row3{grid-template-columns:1fr}}
 .row2.even{grid-template-columns:1fr 1fr}
 .subtabs{display:inline-flex;gap:4px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:4px;margin:14px 0 6px}
 .subtabs span{font-size:13px;padding:7px 16px;border-radius:7px;cursor:pointer;color:var(--muted)}
@@ -78,7 +80,7 @@ tr.clk{cursor:pointer}tr.clk:hover td{background:var(--panel2)}tr.sel td{backgro
 .tot td{border-top:2px solid var(--border2);font-weight:600}
 .bar{height:9px;background:var(--elev);border-radius:5px;overflow:hidden}.bar>span{display:block;height:100%;border-radius:5px}
 .brow{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.brow .nm{flex:1;font-size:12.5px}.brow .vv{font-size:12px;color:var(--muted);min-width:64px;text-align:right;font-variant-numeric:tabular-nums}.brow .bar{flex:1.4}
+.brow .nm{flex:1;font-size:12.5px}.brow .vv{font-size:12px;color:var(--muted);min-width:112px;text-align:right;font-variant-numeric:tabular-nums}.brow .bar{flex:1.4}
 .pri{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;white-space:nowrap}
 .p0{background:var(--danger-s);color:#b91c1c}.p1{background:var(--warning-s);color:#b45309}.p2{background:var(--info-s);color:#1d4ed8}
 .tag{font-size:11px;padding:2px 8px;border-radius:5px;background:var(--elev);color:var(--muted);white-space:nowrap}
@@ -114,7 +116,7 @@ a.olink:hover{text-decoration:underline}a.olink .ar{font-size:10px;opacity:.7}
 .bullet>.fill{position:absolute;left:0;top:0;height:100%;border-radius:6px}.bullet>.mk{position:absolute;top:0;height:100%;width:2px;background:var(--danger)}
 .bullet>.mw{position:absolute;top:0;height:100%;width:2px;background:var(--warning)}
 .funnel .fs{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.funnel .fl{flex:.9;font-size:12.5px}.funnel .ft{flex:2}.funnel .fv{min-width:72px;text-align:right;font-size:12px;font-variant-numeric:tabular-nums}.funnel .fc{min-width:56px;text-align:right;font-size:12px}
+.funnel .fl{flex:0 0 168px;font-size:12.5px}.funnel .ft{flex:1}.funnel .fv{min-width:84px;text-align:right;font-size:12px;font-variant-numeric:tabular-nums}.funnel .fc{min-width:56px;text-align:right;font-size:12px}
 .funnel .hot .fl{font-weight:600;color:var(--warning)}
 .aging{display:grid;grid-template-columns:repeat(auto-fit,minmax(108px,1fr));gap:10px;margin-top:14px}
 .ab{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:11px 12px;cursor:pointer}.ab:hover{border-color:var(--primary)}
@@ -196,12 +198,15 @@ function DEMO(){return{
     {name:"Komex Mobile Store (Shopee)",metric:"LSR – Giao trễ",cur:3.1,target:4,hard:10,unit:"%"}
   ],
   opsAlerts:[
-    {shop:"Komex Home Store (TikTok)",plat:"TikTok",sig:"LDR – Giao trễ",cur:"3,7%",thr:"<4% · đang bị giới hạn đơn",ben:"Trần sản lượng đơn",act:"Giảm tỷ lệ giao muộn",sev:"r"},
-    {shop:"Komex Home Store (TikTok)",plat:"TikTok",sig:"Vi phạm giao trễ (3đ)",cur:"3đ",thr:"giới hạn đơn 7 ngày",ben:"Tham gia Campaign TikTok",act:"Kháng nghị + khắc phục LDR",sev:"r"},
-    {shop:"Mi Smart Home Komex",plat:"Shopee",sig:"Điểm Sao Quả Tạ",cur:"3",thr:"mốc phạt 6",ben:"Shopee Mall / Yêu Thích+",act:"Giảm hủy & giao trễ",sev:"y"},
-    {shop:"Imou Komex Store",plat:"Shopee",sig:"Tỷ lệ phản hồi chat",cur:"86%",thr:"≥90%",ben:"Shopee Mall / Yêu Thích+",act:"Tăng nhân sự CSKH",sev:"y"},
-    {shop:"EZVIZ Komex (TikTok)",plat:"TikTok",sig:"Seller-Fault R&R",cur:"2,3%",thr:"≤2%",ben:"TikTok Mall",act:"Soát quy trình đóng gói",sev:"y"},
-    {shop:"Điện Máy Komex Digital",plat:"Shopee",sig:"NFR – Đơn không hoàn tất",cur:"1,8%",thr:"<2%",ben:"Shopee Mall",act:"Giảm hủy do hết hàng",sev:"y"}
+    {shop:"Komex Home Store (TikTok)",plat:"TikTok",kind:"vp",sig:"Giao hàng trễ (LDR)",cur:"3,7%",thr:"<4% · giới hạn đơn 7 ngày",ben:"Trần sản lượng đơn · Campaign",due:"22/06",st:"applying",act:"Giảm giao muộn + kháng nghị",sev:"r"},
+    {shop:"Mi Smart Home Komex",plat:"Shopee",kind:"vp",sig:"Hủy đơn do hết hàng",cur:"2đ",thr:"Trừ điểm Sao Quả Tạ (mốc 6)",ben:"Shopee Mall / Yêu Thích+",due:"24/06",st:"correction",act:"Giảm hủy do hết hàng",sev:"y"},
+    {shop:"Imou Komex Store",plat:"Shopee",kind:"vp",sig:"Sai mô tả sản phẩm",cur:"1đ",thr:"Cảnh cáo",ben:"Shopee Mall / Yêu Thích+",due:"23/06",st:"appeal",act:"Sửa nội dung mô tả",sev:"y"},
+    {shop:"EZVIZ Komex (TikTok)",plat:"TikTok",kind:"vp",sig:"Phản hồi chat trễ",cur:"1đ",thr:"Nhắc nhở",ben:"TikTok Mall",due:"25/06",st:"logged",act:"Tăng tốc phản hồi",sev:"y"},
+    {shop:"Imou Komex Store",plat:"Shopee",kind:"bd",sig:"Tỷ lệ phản hồi chat",cur:"86%",thr:"≥90%",ben:"Shopee Mall / Yêu Thích+",due:"—",st:null,act:"Tăng nhân sự CSKH",sev:"y"},
+    {shop:"EZVIZ Komex (TikTok)",plat:"TikTok",kind:"bd",sig:"Seller-Fault R&R",cur:"2,3%",thr:"≤2%",ben:"TikTok Mall",due:"—",st:null,act:"Soát quy trình đóng gói",sev:"y"},
+    {shop:"Điện Máy Komex Digital",plat:"Shopee",kind:"bd",sig:"NFR – Đơn không hoàn tất",cur:"1,8%",thr:"<2%",ben:"Shopee Mall",due:"—",st:null,act:"Giảm hủy do hết hàng",sev:"y"},
+    {shop:"Ezviz Komex Store",plat:"Shopee",kind:"vp",sig:"Báo cáo hàng giả (sai)",cur:"2đ",thr:"Tạm khóa listing",ben:"—",due:"21/06",st:"won",act:"Đã kháng nghị thành công",sev:"g"},
+    {shop:"Dahua Komex Store",plat:"Shopee",kind:"vp",sig:"Giao hàng trễ (LSR)",cur:"1đ",thr:"Cảnh cáo",ben:"—",due:"20/06",st:"lost",act:"Khắc phục LSR",sev:"r"}
   ],
   violations:[
     {shop:"Komex Home Store (TikTok)",plat:"TikTok",type:"Giao hàng trễ (LDR)",pts:3,act:"Giới hạn đơn 7 ngày",due:"22/06",st:"applying"},
@@ -295,7 +300,7 @@ function DEMO(){return{
     {s:"Đủ điều kiện khiếu nại",o:360,val:4.60,key:"elig"},{s:"Đã gửi",o:320,val:4.10,key:"sent"},{s:"Yêu cầu bổ sung",o:90,val:1.10,key:"more"},
     {s:"Có phán quyết",o:280,val:3.30,key:"ruled"},{s:"Được duyệt",o:198,val:2.60,key:"appr"},{s:"Đã nhận tiền",o:96,val:0.78,key:"paid"}
   ],
-  claimOutcome:[{n:"Thành công toàn bộ",v:150,c:"g"},{n:"Thành công một phần",v:48,c:"y"},{n:"Bị từ chối",v:82,c:"r"}],
+  claimOutcome:[{n:"Thành công toàn bộ",v:150,val:2.10,c:"g"},{n:"Thành công một phần",v:48,val:0.50,c:"y"},{n:"Bị từ chối",v:82,val:1.50,c:"r"}],
   claims:[
     {date:"20/06",code:"#SP-90112",shop:"Imou Komex Store",plat:"Shopee",type:"Trả SP không khớp đơn đặt",val:"2,40 tr",st:"Chưa xử lý",sl:"r"},
     {date:"20/06",code:"#TT-66021",shop:"Komex Home Store (TikTok)",plat:"TikTok",type:"Giao trễ · khách từ chối nhận",val:"1,20 tr",st:"Đang xử lý",sl:"y"},
@@ -481,10 +486,8 @@ function render1(){
   }).join('');
   var groups={};Object.keys(D.opsMetrics).forEach(function(kk){var gg=D.opsMetrics[kk].g;(groups[gg]=groups[gg]||[]).push(kk);});
   var opsSel='<select id="opsSel">'+Object.keys(groups).map(function(gn){return'<optgroup label="'+gn+'">'+groups[gn].map(function(kk){return'<option value="'+kk+'">'+D.opsMetrics[kk].l+'</option>';}).join('')+'</optgroup>';}).join('')+'</select>';
-  var vio='<table><thead><tr><th>Gian hàng</th><th>Vi phạm</th><th class="num">Điểm phạt</th><th>Biện pháp sàn</th><th>Hạn sửa / kháng nghị</th><th>Trạng thái</th></tr></thead><tbody>'+
-    D.violations.map(function(v){var s=D.vioStatus[v.st];return'<tr class="clk" data-shop="'+v.shop+'" data-plat="'+v.plat+'" data-act="shop"><td>'+v.shop+' <span class="tag '+(v.plat==="TikTok"?"b":"")+'">'+v.plat+'</span></td><td>'+v.type+'</td><td class="num">'+v.pts+'</td><td>'+v.act+'</td><td>'+v.due+'</td><td><span class="tag '+s[1]+'">'+s[0]+'</span></td></tr>';}).join('')+'</tbody></table>';
-  var alert='<table><thead><tr><th>Gian hàng</th><th>Chỉ số / vi phạm báo động</th><th class="num">Hiện tại</th><th>Ngưỡng · biện pháp sàn</th><th>Quyền lợi bị ảnh hưởng</th><th>Cần khắc phục</th></tr></thead><tbody>'+
-    D.opsAlerts.map(function(a){return'<tr class="clk" data-shop="'+a.shop+'" data-plat="'+a.plat+'" data-act="shop"><td>'+a.shop+' <span class="tag '+(a.plat==="TikTok"?"b":"")+'">'+a.plat+'</span></td><td><span class="dot2 '+a.sev+'"></span> '+a.sig+'</td><td class="num">'+a.cur+'</td><td>'+a.thr+'</td><td>'+a.ben+'</td><td>'+a.act+'</td></tr>';}).join('')+'</tbody></table>';
+  var alert='<table><thead><tr><th>Gian hàng</th><th>Chỉ số / Vi phạm</th><th class="num">Hiện tại</th><th>Ngưỡng · Biện pháp sàn</th><th>Quyền lợi bị ảnh hưởng</th><th>Hạn · Trạng thái</th><th>Cần khắc phục</th></tr></thead><tbody>'+
+    D.opsAlerts.map(function(a){var s=a.st?D.vioStatus[a.st]:null;var kind=a.kind==="vp"?'<span class="tag r" style="font-size:9.5px">Vi phạm</span> ':'<span class="tag y" style="font-size:9.5px">Báo động</span> ';var dt=(a.due&&a.due!=="—")?a.due+' ':'';var stt=s?'<span class="tag '+s[1]+'">'+s[0]+'</span>':'';var cell=(dt||stt)?(dt+stt):'—';return'<tr class="clk" data-shop="'+a.shop+'" data-plat="'+a.plat+'" data-act="shop"><td>'+a.shop+' <span class="tag '+(a.plat==="TikTok"?"b":"")+'">'+a.plat+'</span></td><td><span class="dot2 '+a.sev+'"></span> '+kind+a.sig+'</td><td class="num">'+a.cur+'</td><td>'+a.thr+'</td><td>'+a.ben+'</td><td>'+cell+'</td><td>'+a.act+'</td></tr>';}).join('')+'</tbody></table>';
   var tier='<table><thead><tr><th>Gian hàng</th><th>Sàn</th><th>Hạng hiện tại</th><th class="num">Điểm shop</th><th>Chỉ số quyết định hạng</th><th class="num">Hiện tại</th><th class="num">Ngưỡng</th><th>Trạng thái</th></tr></thead><tbody>'+
     D.shopTier.map(function(t,i){
       var det=(t.d||[]).map(function(x){return'<div class="dcard '+x.s+'"><div class="dl">'+x.k+'</div><div class="dv"><span class="dot2 '+x.s+'"></span>'+x.v+'</div></div>';}).join('');
@@ -494,20 +497,16 @@ function render1(){
 
   document.getElementById('pg-1').innerHTML=filterBar()+
     kpiGrid(k)+
-    '<div class="row2">'+
-      '<div class="card nm"><div class="chead"><div><h3>Khoảng cách tới ngưỡng sàn</h3><p class="cap">Top 5 chỉ số sắp chạm ngưỡng. Vạch cam = mục tiêu · vạch đỏ = ngưỡng xử lý mạnh.</p></div></div>'+near+'</div>'+
-      '<div class="card nm"><div class="chead"><div><h3>Vi phạm &amp; biện pháp xử lý</h3><p class="cap">Vi phạm đã ghi nhận, biện pháp đang áp dụng, đang/đã kháng nghị.</p></div></div>'+vio+'</div>'+
-    '</div>'+
-    '<div class="card nm acard"><div class="chead"><div><h3>⚠ Cảnh báo cần khắc phục ngay</h3><p class="cap">Gộp chỉ số báo động + vi phạm, kèm quyền lợi sàn bị ảnh hưởng và việc cần làm. Bấm dòng để lọc theo gian hàng.</p></div></div>'+alert+'</div>'+
-    '<div class="row2">'+
-      '<div class="card nm"><div class="chead"><div><h3>Xu hướng chỉ số sàn</h3><p class="cap">Một biểu đồ, chọn chỉ số theo từng sàn. Có đường mục tiêu (xanh) và vùng cảnh báo (đỏ).</p></div>'+opsSel+'</div>'+
-        '<div class="chartbox sm"><canvas id="c1Trend"></canvas></div></div>'+
-      '<div class="card nm"><div class="chead"><div><h3>Chỉ số có nhiều gian hàng báo động</h3><p class="cap">Số gian hàng đang báo động (đỏ) và làm chưa tốt (vàng) theo từng chỉ số sàn.</p></div></div><div class="chartbox sm"><canvas id="cFlags"></canvas></div></div>'+
-    '</div>'+
+    '<div class="card nm acard"><div class="chead"><div><h3>⚠ Cảnh báo cần khắc phục ngay</h3><p class="cap">Gộp chỉ số báo động và vi phạm: điểm phạt, biện pháp sàn, quyền lợi bị ảnh hưởng, hạn xử lý &amp; việc cần làm. Bấm dòng để lọc theo gian hàng.</p></div></div>'+alert+'</div>'+
     '<div class="card nm"><div class="chead"><div><h3>Ma trận sức khỏe gian hàng</h3><p class="cap">Điểm chuẩn hoá 0–100 từ các chỉ số sàn (có trọng số). Bấm một gian hàng để lọc toàn trang.</p></div></div>'+
       '<div class="scrolly"><table><thead><tr><th>Gian hàng</th><th class="num">Tổng</th>'+D.dimNames.map(function(d){return'<th class="num">'+d+'</th>';}).join('')+'</tr></thead><tbody>'+matRows+matTot+'</tbody></table></div>'+
       '<div class="legend"><span><i style="background:var(--success-s)"></i>≥85 Xanh</span><span><i style="background:var(--warning-s)"></i>70–84 Vàng</span><span><i style="background:var(--danger-s)"></i>&lt;70 Đỏ</span></div></div>'+
-    '<div class="card nm"><div class="chead"><div><h3>Hạng &amp; trạng thái gian hàng theo sàn</h3><p class="cap">Shopee Mall / Yêu Thích / Sao Quả Tạ · TikTok Mall — theo quy định từng sàn. Bấm một dòng để bung bộ chỉ số chi tiết của gian hàng.</p></div></div><div class="scrolly">'+tier+'</div></div>';
+    '<div class="card nm"><div class="chead"><div><h3>Hạng &amp; trạng thái gian hàng theo sàn</h3><p class="cap">Shopee Mall / Yêu Thích / Sao Quả Tạ · TikTok Mall — theo quy định từng sàn. Bấm một dòng để bung bộ chỉ số chi tiết của gian hàng.</p></div></div><div class="scrolly">'+tier+'</div></div>'+
+    '<div class="row2 even eqrow">'+
+      '<div class="card nm"><div class="chead"><div><h3>Chỉ số có nhiều gian hàng báo động</h3><p class="cap">Số gian hàng báo động (đỏ) và làm chưa tốt (vàng) theo từng chỉ số.</p></div></div><div class="chartbox sm"><canvas id="cFlags"></canvas></div></div>'+
+      '<div class="card nm"><div class="chead"><div><h3>Khoảng cách tới ngưỡng sàn</h3><p class="cap">Top 5 chỉ số sắp chạm ngưỡng. Vạch cam = mục tiêu · vạch đỏ = ngưỡng xử lý mạnh.</p></div></div>'+near+'</div>'+
+    '</div>'+
+    '<div class="card nm"><div class="chead"><div><h3>Xu hướng chỉ số sàn</h3><p class="cap">Chọn chỉ số theo từng sàn. Đường mục tiêu (xanh) · vùng cảnh báo (đỏ).</p></div>'+opsSel+'</div><div class="chartbox sm"><canvas id="c1Trend"></canvas></div></div>';
 }
 function chart1Trend(){
   var el=document.getElementById('c1Trend');if(!el)return;destroy('c1Trend');
@@ -577,12 +576,12 @@ function chartRevScore(){
     options:{responsive:true,maintainAspectRatio:false,indexAxis:"y",plugins:{legend:{display:false}},
       scales:{x:{min:4,max:5,grid:{color:"#e6eaf1"},ticks:{color:"#5b6675"}},y:{grid:{display:false},ticks:{color:"#5b6675",font:{size:9.5}}}}}});
 }
-var HM_TAB="rt";
+var HM_TAB="kn";
 function render3(){
   function tab(v,l){return'<span class="'+(HM_TAB===v?"on":"")+'" data-hm="'+v+'">'+l+'</span>';}
   var body=HM_TAB==="rt"?rtContent():HM_TAB==="wt"?wtContent():knContent();
   document.getElementById('pg-3').innerHTML=filterBar()+
-    '<div class="subtabs">'+tab("rt","Hoàn trả")+tab("wt","Bảo hành")+tab("kn","Khiếu nại")+'</div>'+
+    '<div class="subtabs">'+tab("kn","Khiếu nại")+tab("rt","Hoàn trả")+tab("wt","Bảo hành")+'</div>'+
     '<div id="hmBody">'+body+'</div>';
 }
 function caseTable(arr){
@@ -652,7 +651,7 @@ function knContent(){
     {lab:"Tiền quá hạn nhận",val:"0,34",unit:"tỷ",st:"bad",sub:"quá 30 ngày, cần đối soát"}
   ];
   var omax=D.claimOutcome.reduce(function(a,b){return a+b.v;},0);
-  var oc=D.claimOutcome.map(function(o){var col=o.c==="g"?"var(--success)":o.c==="y"?"var(--warning)":"var(--danger)";return'<div class="brow"><span class="nm">'+o.n+'</span><div class="bar"><span style="width:'+(o.v/omax*100)+'%;background:'+col+'"></span></div><span class="vv">'+o.v+' vụ</span></div>';}).join('');
+  var oc=D.claimOutcome.map(function(o){var col=o.c==="g"?"var(--success)":o.c==="y"?"var(--warning)":"var(--danger)";return'<div class="brow"><span class="nm">'+o.n+'</span><div class="bar"><span style="width:'+(o.v/omax*100)+'%;background:'+col+'"></span></div><span class="vv">'+o.v+' vụ · '+o.val.toFixed(2)+' tỷ</span></div>';}).join('');
   var clDone=D.claims.filter(function(x){return x.st==="Đã xử lý";}).length;
   var clDoing=D.claims.filter(function(x){return x.st==="Đang xử lý";}).length;
   var clTodo=D.claims.filter(function(x){return x.st==="Chưa xử lý";}).length;
