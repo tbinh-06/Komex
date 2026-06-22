@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KOMEX · Blueprint Hệ thống Phân tích & Báo cáo Quản trị</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C1330;
+  --navy:#1B2A63;
+  --navy-2:#34457E;
+  --steel:#6E7DA8;
+  --line:#D6DCEA;
+  --line-soft:#E7EBF3;
+  --surface:#FFFFFF;
+  --canvas:#EAEEF6;
+  --accent:#EE7A14;
+  --accent-soft:#FDF0E2;
+  --teal:#107D68;
+  --teal-soft:#E4F1EE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:
+    radial-gradient(1200px 500px at 12% -10%, #F1F4FA 0%, transparent 60%),
+    var(--canvas);
+  font-family:'Inter','Be Vietnam Pro',system-ui,-apple-system,sans-serif;
+  color:var(--ink);
+  min-height:100vh;
+  padding:34px 28px 48px;
+  -webkit-font-smoothing:antialiased;
+  letter-spacing:-0.005em;
+}
+.num{font-variant-numeric:tabular-nums;letter-spacing:0}
+.page{max-width:1640px;margin:0 auto}
+
+/* ───────── TOP BAR ───────── */
+.topbar{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:24px;
+  padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:13px}
+.mark{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--ink),var(--navy));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;font-size:18px;letter-spacing:-.02em;
+  position:relative;box-shadow:0 4px 14px rgba(27,42,99,.28);
+}
+.mark::after{content:"";position:absolute;right:-3px;bottom:-3px;width:11px;height:11px;border-radius:3px;background:var(--accent);box-shadow:0 0 0 2.5px var(--canvas)}
+.brand-txt .eyebrow{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--steel)}
+.brand-txt h1{font-size:20px;font-weight:800;letter-spacing:-.015em;color:var(--ink);line-height:1.18;margin-top:2px}
+.brand-txt h1 b{color:var(--accent);font-weight:800}
+.topmeta{text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.flowline{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:var(--steel)}
+.flowline .step{padding:4px 10px;border:1px solid var(--line);border-radius:20px;background:var(--surface);color:var(--navy);white-space:nowrap}
+.flowline .arr{color:var(--steel);font-weight:700}
+.stamp{font-size:10.5px;font-weight:500;color:var(--steel)}
+.stamp b{color:var(--accent);font-weight:700}
+
+/* ───────── LEGEND ───────── */
+.legend{display:flex;flex-wrap:wrap;gap:22px;margin-bottom:20px;padding:12px 16px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.lg-group{display:flex;align-items:center;gap:13px}
+.lg-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--steel)}
+.lg-item{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--navy)}
+.lg-swatch{width:13px;height:13px;border-radius:3px;flex-shrink:0}
+.lg-bar{width:4px;height:14px;border-radius:2px;flex-shrink:0}
+
+/* ───────── GRID 3 CỘT ───────── */
+.mgrid{display:grid;grid-template-columns:1fr 1.05fr 1.12fr;gap:20px;align-items:start}
+.mcell{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:0;box-shadow:0 1px 2px rgba(12,19,48,.04),0 10px 28px rgba(12,19,48,.05);
+  overflow:hidden;
+}
+
+/* HEADER CỘT */
+.col-header{
+  display:flex;align-items:center;gap:11px;
+  padding:14px 18px;border-bottom:1px solid var(--line);
+}
+.col-num{
+  font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;
+  width:31px;height:31px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.col-title{font-size:13.5px;font-weight:700;letter-spacing:-.01em;color:var(--ink);line-height:1.25}
+.col-title small{display:block;font-size:10px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;color:var(--steel);margin-top:2px}
+.col-header.c1{background:linear-gradient(180deg,#F7F9FD,var(--surface))}
+.col-header.c1 .col-num{background:var(--line-soft);color:var(--navy)}
+.col-header.c2{background:linear-gradient(180deg,#F4F6FC,var(--surface))}
+.col-header.c2 .col-num{background:var(--navy);color:#fff}
+.col-header.c3{background:linear-gradient(180deg,#FCF5EE,var(--surface));border-bottom:1px solid var(--accent-soft)}
+.col-header.c3 .col-num{background:var(--accent);color:#fff}
+
+.col-body{padding:16px}
+
+/* ZONE */
+.zone{margin-bottom:18px}
+.zone:last-child{margin-bottom:0}
+.zt{
+  display:flex;align-items:center;gap:8px;
+  font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);
+  margin-bottom:11px;
+}
+.zt::after{content:"";flex:1;height:1px;background:var(--line-soft)}
+.zt .tier{font-size:10px;font-weight:800;padding:2px 7px;border-radius:5px;letter-spacing:.02em}
+.tier.t1{background:var(--accent-soft);color:#B25809}
+.tier.t2{background:#EAEEF8;color:var(--navy)}
+.tier.t3{background:var(--line-soft);color:var(--steel)}
+.tier.tpf{background:var(--teal-soft);color:#0B5C4D}
+
+/* CARD (.bx) */
+.bx{
+  position:relative;display:block;width:100%;text-align:left;
+  border:1px solid var(--line);border-radius:9px;background:var(--surface);
+  padding:11px 13px 11px 16px;margin-bottom:8px;cursor:pointer;
+  transition:border-color .15s,box-shadow .15s,transform .15s,background .15s;
+  font-family:inherit;
+}
+.bx:last-child{margin-bottom:0}
+.bx::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--line);transition:background .15s,width .15s}
+.bx:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(27,42,99,.08);border-color:#C2CBE0}
+.bx:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(238,122,20,.32);border-color:var(--accent)}
+.bx.active{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 1px var(--accent)}
+.bx.active::before{background:var(--accent);width:4px}
+.bx .bn{font-size:13px;font-weight:600;color:var(--ink);line-height:1.4}
+.bx .bt{font-size:10.5px;font-weight:600;letter-spacing:.01em;color:var(--steel);margin-top:4px;display:block}
+
+/* Thanh ưu tiên theo tier (cột 2) */
+.bx.tier-1::before{background:var(--accent)}
+.bx.tier-2::before{background:var(--navy)}
+.bx.tier-3::before{background:var(--steel)}
+.bx.tier-pf::before{background:var(--teal)}
+.bx.active.tier-1::before,.bx.active.tier-2::before,.bx.active.tier-3::before,.bx.active.tier-pf::before{background:var(--accent)}
+
+/* Loại báo cáo (cột 3) */
+.bx.rt .bt{display:flex;align-items:center;gap:6px}
+.bx.rt .bt::before{content:"";width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.bx.rt-strategic::before{background:var(--accent)}
+.bx.rt-strategic .bt::before{background:var(--accent)}
+.bx.rt-operational::before{background:var(--navy)}
+.bx.rt-operational .bt::before{background:var(--navy)}
+.bx.rt-diagnostic::before{background:var(--steel)}
+.bx.rt-diagnostic .bt::before{background:var(--steel)}
+.bx.rt-predictive::before{background:var(--teal)}
+.bx.rt-predictive .bt::before{background:var(--teal)}
+.bx.rt .rnum{font-weight:800;font-variant-numeric:tabular-nums;font-size:11px;color:var(--steel);margin-right:8px}
+.bx.active.rt-strategic::before,.bx.active.rt-operational::before,.bx.active.rt-diagnostic::before,.bx.active.rt-predictive::before{background:var(--accent)}
+
+/* Card chủ đạo (2 lát cắt được nhấn mạnh) */
+.bx.anchor{border-width:1.5px}
+.bx.anchor .anchor-tag{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:var(--ink);color:#fff;margin-bottom:6px}
+
+/* MA TRẬN DOANH THU */
+.matrix{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
+.matrix th{
+  font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--steel);text-align:center;padding:7px 6px;border-bottom:1.5px solid var(--line);
+}
+.matrix th:first-child{text-align:left}
+.matrix td{padding:8px 6px;border-bottom:1px solid var(--line-soft);text-align:center}
+.matrix tr:last-child td{border-bottom:none}
+.matrix td:first-child{text-align:left;font-weight:600;color:var(--ink);font-size:12px}
+.heat{display:inline-flex;align-items:center;justify-content:center;min-width:48px;padding:3px 9px;border-radius:6px;font-size:10.5px;font-weight:700}
+.heat.hi{background:var(--teal);color:#fff}
+.heat.mid{background:#E7EBF6;color:var(--navy)}
+.heat.lo{background:var(--surface);color:var(--steel);border:1px dashed var(--line)}
+
+/* ───────── DRAWER ───────── */
+.drawer{
+  display:none;margin-top:22px;background:var(--surface);
+  border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:0 0 14px 14px;
+  box-shadow:0 18px 40px rgba(12,19,48,.12);overflow:hidden;
+  animation:su .18s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes su{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.drawer{animation:none}.bx:hover{transform:none}}
+.dhead{display:flex;align-items:flex-start;gap:14px;padding:18px 22px;background:linear-gradient(180deg,#FBFCFE,var(--surface));border-bottom:1px solid var(--line)}
+.dbadge{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 10px;border-radius:6px;background:var(--ink);color:#fff;white-space:nowrap;margin-top:2px}
+.dname{font-size:16px;font-weight:700;color:var(--ink);line-height:1.3}
+.dtech{font-size:11.5px;font-weight:500;color:var(--navy-2);margin-top:5px}
+.dclose{margin-left:auto;width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--steel);flex-shrink:0;transition:all .14s}
+.dclose:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+.dclose:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(238,122,20,.32)}
+.dbody{padding:18px 22px 22px}
+.dlbl{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--steel);margin-bottom:12px}
+.drow{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.drow:last-child{border-bottom:none}
+.dnum{font-weight:800;font-variant-numeric:tabular-nums;font-size:12px;color:var(--accent);flex-shrink:0;line-height:1.55}
+.dtext{font-size:13.5px;color:var(--ink);line-height:1.6}
+
+footer{text-align:center;margin-top:34px;font-size:11px;color:var(--steel);font-weight:500}
+footer b{color:var(--navy);font-weight:700}
+
+/* ───────── RESPONSIVE ───────── */
+@media (max-width:1080px){
+  .mgrid{grid-template-columns:1fr 1fr}
+  .mcell:nth-child(3){grid-column:1 / -1}
+}
+@media (max-width:720px){
+  body{padding:22px 16px 36px}
+  .topbar{flex-direction:column;align-items:flex-start;gap:14px}
+  .topmeta{text-align:left;align-items:flex-start}
+  .flowline{flex-wrap:wrap}
+  .mgrid{grid-template-columns:1fr}
+  .mcell:nth-child(3){grid-column:auto}
+  .legend{gap:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark">K</div>
+      <div class="brand-txt">
+        <div class="eyebrow">Analytics Blueprint</div>
+        <h1>Hệ thống Phân tích &amp; Báo cáo Quản trị <b>KOMEX</b></h1>
+      </div>
+    </div>
+    <div class="topmeta">
+      <div class="flowline">
+        <span class="step">01 · Chân dung</span>
+        <span class="arr">→</span>
+        <span class="step">02 · Hệ thống chỉ số</span>
+        <span class="arr">→</span>
+        <span class="step">03 · Lát cắt báo cáo</span>
+      </div>
+      <div class="stamp">Bản đồ luồng vận hành chỉ số · <b>v1.1 / 2026</b></div>
+    </div>
+  </header>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="lg-group">
+      <span class="lg-title">Ưu tiên chỉ số</span>
+      <span class="lg-item"><span class="lg-bar" style="background:var(--accent)"></span>L1 · Sống còn</span>
+      <span class="lg-item"><span class="lg-bar" style="background:var(--navy)"></span>L2 · Vận hành</span>
+      <span class="lg-item"><span class="lg-bar" style="background:var(--steel)"></span>L3 · Chẩn đoán</span>
+      <span class="lg-item"><span class="lg-bar" style="background:var(--teal)"></span>Sàn TMĐT</span>
+    </div>
+    <div class="lg-group">
+      <span class="lg-title">Loại báo cáo</span>
+      <span class="lg-item"><span class="lg-swatch" style="background:var(--accent)"></span>Strategic</span>
+      <span class="lg-item"><span class="lg-swatch" style="background:var(--navy)"></span>Operational</span>
+      <span class="lg-item"><span class="lg-swatch" style="background:var(--steel)"></span>Diagnostic</span>
+      <span class="lg-item"><span class="lg-swatch" style="background:var(--teal)"></span>Predictive</span>
+    </div>
+  </div>
+
+  <div class="mgrid">
+
+    <!-- ═══ CỘT 1 ═══ -->
+    <section class="mcell">
+      <div class="col-header c1">
+        <div class="col-num num">01</div>
+        <div class="col-title">Chân dung Komex<small>Business profile</small></div>
+      </div>
+      <div class="col-body">
+
+        <div class="zone">
+          <div class="zt">Mô hình kinh doanh</div>
+          <div class="bx" id="b-mhkd1" tabindex="0" role="button" onclick="pick('mhkd1')">
+            <span class="bn">Nhà phân phối đa thương hiệu</span>
+            <span class="bt">13+ thương hiệu toàn cầu</span>
+          </div>
+          <div class="bx" id="b-mhkd2" tabindex="0" role="button" onclick="pick('mhkd2')">
+            <span class="bn">Mô hình Hybrid</span>
+            <span class="bt">Vận hành song song B2C &amp; B2B</span>
+          </div>
+        </div>
+
+        <div class="zone">
+          <div class="zt">Định hướng ngành hàng</div>
+          <div class="bx" id="b-nh1" tabindex="0" role="button" onclick="pick('nh1')">
+            <span class="bn">Camera An ninh</span>
+            <span class="bt">Chiến lược tái mua cao</span>
+          </div>
+          <div class="bx" id="b-nh2" tabindex="0" role="button" onclick="pick('nh2')">
+            <span class="bn">Năng lượng Solar</span>
+            <span class="bt">Sản phẩm thúc đẩy tăng trưởng</span>
+          </div>
+        </div>
+
+        <div class="zone">
+          <div class="zt">Ma trận doanh thu sơ bộ</div>
+          <table class="matrix">
+            <thead><tr><th>Ngành</th><th>TikTok</th><th>Shopee</th><th>Đại lý</th></tr></thead>
+            <tbody>
+              <tr><td>Camera</td><td><span class="heat hi">Cao</span></td><td><span class="heat mid">Vừa</span></td><td><span class="heat hi">Cao</span></td></tr>
+              <tr><td>Gia dụng</td><td><span class="heat hi">Cao</span></td><td><span class="heat hi">Cao</span></td><td><span class="heat lo">Thấp</span></td></tr>
+              <tr><td>Solar</td><td><span class="heat lo">—</span></td><td><span class="heat lo">—</span></td><td><span class="heat hi">Cao</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ CỘT 2 ═══ -->
+    <section class="mcell">
+      <div class="col-header c2">
+        <div class="col-num num">02</div>
+        <div class="col-title">Hệ thống chỉ số<small>Metrics system</small></div>
+      </div>
+      <div class="col-body">
+
+        <div class="zone">
+          <div class="zt"><span class="tier t1">L1</span> Chỉ số sống còn</div>
+          <div class="bx tier-1" id="b-kpi-l1-1" tabindex="0" role="button" onclick="pick('kpi-l1-1')">
+            <span class="bn">Net Channel Revenue</span>
+            <span class="bt">Doanh thu thuần thực tế kênh</span>
+          </div>
+          <div class="bx tier-1" id="b-kpi-l1-2" tabindex="0" role="button" onclick="pick('kpi-l1-2')">
+            <span class="bn">Brand Gross Margin %</span>
+            <span class="bt">Biên lợi nhuận gộp thương hiệu</span>
+          </div>
+          <div class="bx tier-1" id="b-kpi-l1-3" tabindex="0" role="button" onclick="pick('kpi-l1-3')">
+            <span class="bn">Inventory Health Index</span>
+            <span class="bt">Sức khỏe tồn kho tổng</span>
+          </div>
+        </div>
+
+        <div class="zone">
+          <div class="zt"><span class="tier t2">L2</span> Chỉ số vận hành hỗ trợ</div>
+          <div class="bx tier-2" id="b-kpi-l2-1" tabindex="0" role="button" onclick="pick('kpi-l2-1')">
+            <span class="bn">Effective Platform Margin</span>
+            <span class="bt">Biên sàn hiệu dụng thực tế</span>
+          </div>
+          <div class="bx tier-2" id="b-kpi-l2-2" tabindex="0" role="button" onclick="pick('kpi-l2-2')">
+            <span class="bn">Channel GMV Split %</span>
+            <span class="bt">Tỷ trọng đóng góp GMV đa kênh</span>
+          </div>
+          <div class="bx tier-2" id="b-kpi-l2-3" tabindex="0" role="button" onclick="pick('kpi-l2-3')">
+            <span class="bn">Return Rate by Category</span>
+            <span class="bt">Tỷ lệ hoàn hàng theo danh mục</span>
+          </div>
+        </div>
+
+        <div class="zone">
+          <div class="zt"><span class="tier tpf">SÀN</span> Chỉ số sức khỏe sàn TMĐT</div>
+          <div class="bx tier-pf" id="b-kpi-pf-1" tabindex="0" role="button" onclick="pick('kpi-pf-1')">
+            <span class="bn">Shop Performance Score</span>
+            <span class="bt">Điểm sức khỏe gian hàng theo sàn</span>
+          </div>
+          <div class="bx tier-pf" id="b-kpi-pf-2" tabindex="0" role="button" onclick="pick('kpi-pf-2')">
+            <span class="bn">OTDR &amp; Late Shipment Rate</span>
+            <span class="bt">Giao đúng hẹn / trễ hẹn do shop</span>
+          </div>
+          <div class="bx tier-pf" id="b-kpi-pf-3" tabindex="0" role="button" onclick="pick('kpi-pf-3')">
+            <span class="bn">Cancellation Rate</span>
+            <span class="bt">Tỷ lệ huỷ đơn (do shop)</span>
+          </div>
+          <div class="bx tier-pf" id="b-kpi-pf-4" tabindex="0" role="button" onclick="pick('kpi-pf-4')">
+            <span class="bn">Negative Review Rate</span>
+            <span class="bt">Tỷ lệ đánh giá 1–2 sao theo SKU</span>
+          </div>
+          <div class="bx tier-pf" id="b-kpi-pf-5" tabindex="0" role="button" onclick="pick('kpi-pf-5')">
+            <span class="bn">Chat Response Rate</span>
+            <span class="bt">Tỷ lệ &amp; tốc độ phản hồi tin nhắn</span>
+          </div>
+          <div class="bx tier-pf" id="b-kpi-pf-6" tabindex="0" role="button" onclick="pick('kpi-pf-6')">
+            <span class="bn">Penalty / Violation Points</span>
+            <span class="bt">Điểm vi phạm chính sách sàn</span>
+          </div>
+        </div>
+
+        <div class="zone">
+          <div class="zt"><span class="tier t3">L3</span> Chỉ số đặc thù &amp; chẩn đoán</div>
+          <div class="bx tier-3" id="b-kpi-l3-1" tabindex="0" role="button" onclick="pick('kpi-l3-1')">
+            <span class="bn">DIO — Days Inventory Outstanding</span>
+            <span class="bt">Số ngày tồn kho bình quân SKU</span>
+          </div>
+          <div class="bx tier-3" id="b-kpi-l3-2" tabindex="0" role="button" onclick="pick('kpi-l3-2')">
+            <span class="bn">KOC Affiliate ROAS</span>
+            <span class="bt">Hiệu suất chi phí tiếp thị liên kết</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ CỘT 3 ═══ -->
+    <section class="mcell">
+      <div class="col-header c3">
+        <div class="col-num num">03</div>
+        <div class="col-title">Lát cắt báo cáo quản trị<small>Management reports</small></div>
+      </div>
+      <div class="col-body">
+
+        <div class="bx rt rt-strategic anchor" id="b-rep1" tabindex="0" role="button" onclick="pick('rep1')">
+          <span class="anchor-tag">Lát cắt 1</span>
+          <span class="bn"><span class="rnum num">01</span>Báo cáo Tài chính</span>
+          <span class="bt">Strategic · Doanh thu · Chi phí · Dòng tiền</span>
+        </div>
+        <div class="bx rt rt-operational anchor" id="b-rep2" tabindex="0" role="button" onclick="pick('rep2')">
+          <span class="anchor-tag">Lát cắt 2</span>
+          <span class="bn"><span class="rnum num">02</span>Báo cáo Vận hành &amp; Đơn hàng</span>
+          <span class="bt">Operational · Điểm shop · Đánh giá xấu · Khiếu nại · Order</span>
+        </div>
+        <div class="bx rt rt-operational" id="b-rep3" tabindex="0" role="button" onclick="pick('rep3')">
+          <span class="bn"><span class="rnum num">03</span>Báo cáo Kênh bán hàng đa kênh</span>
+          <span class="bt">Operational · Vận hành</span>
+        </div>
+        <div class="bx rt rt-diagnostic" id="b-rep4" tabindex="0" role="button" onclick="pick('rep4')">
+          <span class="bn"><span class="rnum num">04</span>Báo cáo Marketing &amp; Affiliate</span>
+          <span class="bt">Diagnostic · Chẩn đoán</span>
+        </div>
+        <div class="bx rt rt-diagnostic" id="b-rep5" tabindex="0" role="button" onclick="pick('rep5')">
+          <span class="bn"><span class="rnum num">05</span>Báo cáo Phân tích khách hàng</span>
+          <span class="bt">Diagnostic · Chẩn đoán</span>
+        </div>
+        <div class="bx rt rt-diagnostic" id="b-rep6" tabindex="0" role="button" onclick="pick('rep6')">
+          <span class="bn"><span class="rnum num">06</span>Báo cáo Hiệu suất sản phẩm</span>
+          <span class="bt">Diagnostic · Chẩn đoán</span>
+        </div>
+        <div class="bx rt rt-operational" id="b-rep7" tabindex="0" role="button" onclick="pick('rep7')">
+          <span class="bn"><span class="rnum num">07</span>Báo cáo Kho &amp; Tồn</span>
+          <span class="bt">Operational · Vận hành</span>
+        </div>
+        <div class="bx rt rt-predictive" id="b-rep8" tabindex="0" role="button" onclick="pick('rep8')">
+          <span class="bn"><span class="rnum num">08</span>Báo cáo Dự báo &amp; Kế hoạch</span>
+          <span class="bt">Predictive · Dự báo</span>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- DRAWER -->
+  <div class="drawer" id="drawer" role="region" aria-live="polite">
+    <div class="dhead">
+      <div class="dbadge" id="db">LOẠI HÌNH</div>
+      <div>
+        <div class="dname" id="dn">Tên đối tượng hiển thị</div>
+        <div class="dtech" id="dt">Mô tả / chỉ số liên quan</div>
+      </div>
+      <button class="dclose" onclick="closeDrawer()" aria-label="Đóng">✕</button>
+    </div>
+    <div class="dbody">
+      <div class="dlbl">Câu hỏi quản trị cốt lõi cần giải quyết</div>
+      <div id="dd"></div>
+    </div>
+  </div>
+
+  <footer>
+    <b>KOMEX</b> Analytics Platform · Blueprint bố cục &amp; luồng dữ liệu · 2026
+  </footer>
+</div>
+
+<script>
+const D = {
+  'mhkd1': { badge: 'Mô hình', name: 'Nhà phân phối đa thương hiệu', tech: 'Không sở hữu thương hiệu độc quyền · Phân phối chéo 13+ brand toàn cầu', flows: ['Quản lý giá trần / giá sàn khắt khe để tránh xung đột kênh.', 'Tối ưu phân phối tồn kho giữa các đối tác cung ứng nước ngoài.'] },
+  'mhkd2': { badge: 'Kênh phân phối', name: 'Mô hình lai Hybrid (B2B & B2C)', tech: 'Bán lẻ qua sàn TMĐT kết hợp mạng lưới đại lý tỉnh', flows: ['Kiểm soát dòng tiền đại lý (công nợ) song song với dòng tiền COD đổ về từ sàn.', 'Tối ưu nguồn lực vận kho phục vụ cả đơn sỉ đóng pallet lẫn đơn lẻ đóng hộp.'] },
+  'nh1': { badge: 'Ngành chiến lược', name: 'Ngành hàng Camera An ninh', tech: 'Sản phẩm mũi nhọn mang lại dòng tiền đều', flows: ['Tỷ lệ tái mua phụ kiện cao, hệ sinh thái giải pháp mở rộng.', 'Đòi hỏi quy trình dịch vụ sau bán hàng chuyên nghiệp (bảo hành 24 tháng).'] },
+  'nh2': { badge: 'Ngành tăng trưởng', name: 'Ngành năng lượng Solar', tech: 'Đo lường lực kéo thị trường (traction) & quản lý cơ hội', flows: ['Quản lý phễu dự án (pipeline) dài hạn từ giai đoạn khảo sát đến lắp đặt.', 'Giá trị đơn hàng cao, yêu cầu tối ưu dòng vốn lưu động cực tốt.'] },
+
+  'kpi-l1-1': { badge: 'Chỉ số L1', name: 'Net Channel Revenue — Doanh thu thuần thực tế kênh', tech: 'North-Star Metric', flows: ['Đo lường chính xác dòng tiền thực nhận sau khi trừ chiết khấu sàn, voucher và trợ giá ship.', 'Định hướng dòng tiền thực tế cho doanh nghiệp, tránh tình trạng "lãi ảo lỗ thật".'] },
+  'kpi-l1-2': { badge: 'Chỉ số L1', name: 'Brand Gross Margin % — Biên lợi nhuận gộp theo brand', tech: 'North-Star Metric', flows: ['Đánh giá thương hiệu nào đang nuôi bộ máy, thương hiệu nào đang đốt tiền phụ thuộc khuyến mãi.', 'Là cơ sở để đàm phán lại chiết khấu hoặc hạn mức nhập hàng với nhà sản xuất gốc.'] },
+  'kpi-l1-3': { badge: 'Chỉ số L1', name: 'Inventory Health Index — Chỉ số sức khỏe tồn kho', tech: 'North-Star Metric', flows: ['Cân bằng giữa tỷ lệ hết hàng (out of stock) tại các chiến dịch lớn với chi phí ôm hàng đọng vốn.'] },
+
+  'kpi-l2-1': { badge: 'Chỉ số L2', name: 'Effective Platform Margin — Biên sàn hiệu dụng', tech: 'Supporting Metric', flows: ['Bóc tách toàn bộ cơ cấu phí cố định, phí hoa hồng và chi phí chạy quảng cáo nội sàn phát sinh.'] },
+  'kpi-l2-2': { badge: 'Chỉ số L2', name: 'Channel GMV Split %', tech: 'Supporting Metric', flows: ['Giám sát sự dịch chuyển thói quen người dùng giữa TikTok Shop, Shopee và đại lý truyền thống.'] },
+  'kpi-l2-3': { badge: 'Chỉ số L2', name: 'Return Rate by Category', tech: 'Supporting Metric', flows: ['Theo dõi tỷ lệ hoàn hàng đột biến theo ngành để phát hiện lỗi khâu tư vấn hoặc vận chuyển đóng gói.'] },
+
+  'kpi-pf-1': { badge: 'Chỉ số sàn', name: 'Shop Performance Score — Điểm sức khỏe gian hàng', tech: 'Platform Health · TikTok Shop / Shopee', flows: ['Theo dõi điểm sức khỏe gian hàng từng sàn; cảnh báo sớm khi tụt ngưỡng bị giảm hiển thị hoặc khoá tính năng.', 'Đây là chỉ số gốc quyết định lượng traffic tự nhiên & quyền tham gia campaign của sàn.'] },
+  'kpi-pf-2': { badge: 'Chỉ số sàn', name: 'OTDR & Late Shipment Rate — Giao đúng hẹn / trễ hẹn', tech: 'Platform Health · Vận hành đơn', flows: ['Đo tỷ lệ giao đúng hẹn và tỷ lệ trễ do shop để giữ điểm vận hành, tránh bị phạt giảm traffic.', 'Tách rõ phần trễ do kho/đóng gói với phần trễ do đơn vị vận chuyển.'] },
+  'kpi-pf-3': { badge: 'Chỉ số sàn', name: 'Cancellation Rate — Tỷ lệ huỷ đơn (do shop)', tech: 'Platform Health · Vận hành đơn', flows: ['Tách tỷ lệ huỷ do shop (hết hàng, không xác nhận kịp) khỏi huỷ do khách để xử lý đúng gốc.', 'Huỷ do shop bị tính nặng nhất vào điểm gian hàng — cần kéo về sát 0%.'] },
+  'kpi-pf-4': { badge: 'Chỉ số sàn', name: 'Negative Review Rate — Tỷ lệ đánh giá 1–2 sao', tech: 'Platform Health · Chất lượng', flows: ['Theo dõi tỷ lệ đánh giá xấu theo SKU và theo brand, phát hiện sớm lô hàng hoặc khâu đóng gói lỗi.', 'Liên kết trực tiếp với báo cáo Vận hành & Khách hàng để truy nguyên nhân gốc.'] },
+  'kpi-pf-5': { badge: 'Chỉ số sàn', name: 'Chat Response Rate — Tỷ lệ & tốc độ phản hồi', tech: 'Platform Health · CSKH', flows: ['Giám sát tỷ lệ và thời gian phản hồi tin nhắn — yếu tố ảnh hưởng trực tiếp điểm shop và tỷ lệ chốt đơn.'] },
+  'kpi-pf-6': { badge: 'Chỉ số sàn', name: 'Penalty / Violation Points — Điểm vi phạm', tech: 'Platform Health · Tuân thủ', flows: ['Theo dõi điểm vi phạm chính sách sàn để tránh bị tụt hạng gian hàng hoặc gỡ sản phẩm khỏi đề xuất.'] },
+
+  'kpi-l3-1': { badge: 'Chỉ số L3', name: 'DIO — Days Inventory Outstanding', tech: 'Diagnostic Metric', flows: ['Đếm số ngày giam vốn của từng mã SKU trong kho lẻ và kho sỉ.'] },
+  'kpi-l3-2': { badge: 'Chỉ số L3', name: 'KOC Affiliate ROAS', tech: 'Diagnostic Metric', flows: ['Đo lường mức độ hiệu quả của việc thuê các nhà sáng tạo nội dung livestream đẩy hàng trên TikTok.'] },
+
+  'rep1': { badge: 'Strategic', name: '01 · Báo cáo Tài chính', tech: 'Lát cắt 1 · Doanh thu · Chi phí · Dòng tiền · Lợi nhuận', flows: ['Doanh thu thuần thực nhận (sau phí sàn, voucher, trợ ship) chênh bao nhiêu so với GMV báo cáo — và kênh nào bị cắt xén nhiều nhất?','Cơ cấu chi phí (giá vốn, phí sàn, marketing, vận hành, after-sales) — khoản nào đang phình nhanh hơn doanh thu?','Dòng tiền: tiền sàn về theo chu kỳ T+x, công nợ đại lý và tồn kho đang giam bao nhiêu vốn lưu động?','Gross Margin / Net Margin theo brand so với benchmark ngành — thương hiệu nào lãi thật, thương hiệu nào lãi ảo?'] },
+  'rep2': { badge: 'Operational', name: '02 · Báo cáo Vận hành & Đơn hàng', tech: 'Lát cắt 2 · Điểm shop · Đánh giá xấu · Khiếu nại · Đơn hàng', flows: ['Điểm sức khỏe gian hàng từng sàn (TikTok / Shopee) đang ở ngưỡng nào — có sắp bị hạn chế hiển thị hoặc khoá tính năng không?','Tỷ lệ đánh giá 1–2 sao tập trung ở SKU / brand nào — nguyên nhân do sản phẩm, đóng gói hay tư vấn?','Khiếu nại & yêu cầu hỗ trợ: thời gian xử lý trung bình và tỷ lệ giải quyết trong SLA là bao nhiêu?','Đơn hàng: tỷ lệ giao đúng hẹn (OTDR), giao trễ và huỷ do shop — kênh nào đang kéo điểm vận hành xuống?'] },
+  'rep3': { badge: 'Operational', name: '03 · Báo cáo Kênh bán hàng đa kênh', tech: 'TikTok Shop · Shopee · Website · Đại lý', flows: ['TikTok Shop vs Shopee vs Website vs Đại lý: kênh nào có chi phí fulfillment trên mỗi đơn tốt nhất?','Tỷ trọng GMV từng kênh đang dịch chuyển ra sao theo thời gian — kênh nào tăng, kênh nào bão hòa?','Đơn hàng đại lý tỉnh thành có được xử lý và giao đúng SLA so với kênh online trực tiếp không?','Kênh nào có tỷ lệ đơn bị huỷ cao bất thường — do hết hàng, lỗi hệ thống hay vấn đề vận hành?'] },
+  'rep4': { badge: 'Diagnostic', name: '04 · Báo cáo Marketing & Affiliate', tech: 'ROI quảng cáo · KOC/Affiliate · Flash Sale', flows: ['ROAS thực của Shopee Ads vs TikTok Ads — sau khi tính đủ phí sàn, kênh nào hiệu quả hơn cho từng danh mục?','KOC / Affiliate nào trên TikTok đang mang lại doanh thu cao nhất cho Camera, Gia dụng và Smart Home?','Ngân sách marketing có tương xứng với margin thực tế mà từng brand mang lại không?','Flash sale có thực sự tạo thêm doanh thu mới hay chỉ dịch chuyển đơn từ ngày khác?'] },
+  'rep5': { badge: 'Diagnostic', name: '05 · Báo cáo Phân tích khách hàng', tech: 'Nguyên nhân hoàn · Tái mua · B2B vs B2C', flows: ['Nguyên nhân hoàn hàng chủ yếu là gì — lỗi sản phẩm, mô tả sai, hay lắp đặt phức tạp (đặc biệt Camera, thiết bị mạng)?','Khách hàng B2B (camera doanh nghiệp, laptop corporate) có tỷ lệ hài lòng và tái mua cao hơn B2C không?','Phân khúc khách nào có giá trị vòng đời (LTV) cao nhất — để ưu tiên chăm sóc và remarketing?','TikTok có tỷ lệ hoàn cao hơn Shopee do impulse buy — ảnh hưởng thực tế đến margin là bao nhiêu?'] },
+  'rep6': { badge: 'Diagnostic', name: '06 · Báo cáo Hiệu suất sản phẩm', tech: 'Doanh thu · Margin · Chuyển đổi theo SKU & danh mục', flows: ['Top SKU theo doanh thu và top SKU theo margin có khác nhau không — sản phẩm bán chạy nhất có thực sự đang có lãi?','Sản phẩm nào hiệu quả trên TikTok nhưng kém trên Shopee và ngược lại — để tối ưu phân bổ hàng theo kênh?','Thương hiệu nào có tỷ lệ return / warranty claim cao nhất — ảnh hưởng thế nào đến lợi nhuận thực tế?','Danh mục Solar và Smart Home đang có traction như thế nào — đủ traction để mở rộng danh mục?'] },
+  'rep7': { badge: 'Operational', name: '07 · Báo cáo Kho & Tồn', tech: 'Tồn kho · Vòng quay · Hàng chậm · Phân bổ theo kênh', flows: ['SKU nào đang tồn kho quá 90 ngày cần thanh lý trước khi mất thêm giá trị — đặc biệt các dòng dễ lỗi thời?','Danh mục nào đang out-of-stock đúng peak demand (Tết, 11.11, 12.12) do dự báo chưa chính xác?','Phân bổ hàng giữa kho Hà Nội và kho HCM có đang tối ưu theo nhu cầu thực tế từng miền không?','Hàng tồn của thương hiệu nào đang chiếm nhiều vốn nhất — do bán chậm hay nhập quá nhiều?'] },
+  'rep8': { badge: 'Predictive', name: '08 · Báo cáo Dự báo & Kế hoạch', tech: 'Forecast doanh thu · Nhu cầu nhập hàng · Ngân sách', flows: ['Cần nhập bao nhiêu hàng cho từng danh mục trước Tết, 11.11, 12.12 — dựa trên lịch sử và xu hướng từng kênh?','Doanh thu tháng tới đang đi theo hướng nào — trên hay dưới kế hoạch năm, và kênh nào đang kéo xuống?','Ngân sách marketing quý tới nên phân bổ như thế nào giữa TikTok Ads, Shopee Ads và KOC affiliate?','Danh mục Solar có đủ traction để tăng đầu tư nhập hàng trong năm tới — hay nên cắt SKU chậm?'] }
+};
+
+let curId = null;
+
+function pick(id) {
+  document.querySelectorAll('.bx').forEach(e => e.classList.remove('active'));
+  const drawer = document.getElementById('drawer');
+
+  if (curId === id) {
+    curId = null;
+    drawer.style.display = 'none';
+    return;
+  }
+
+  curId = id;
+  const activeBlock = document.getElementById('b-' + id);
+  if (activeBlock) activeBlock.classList.add('active');
+
+  const data = D[id];
+  if (!data) return;
+
+  document.getElementById('db').textContent = data.badge;
+  document.getElementById('dn').textContent = data.name;
+  document.getElementById('dt').textContent = data.tech;
+
+  document.getElementById('dd').innerHTML = data.flows.map((text, i) => `
+    <div class="drow">
+      <div class="dnum num">${String(i + 1).padStart(2, '0')}</div>
+      <div class="dtext">${text}</div>
+    </div>
+  `).join('');
+
+  drawer.style.display = 'block';
+  setTimeout(() => drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+}
+
+function closeDrawer() {
+  curId = null;
+  document.querySelectorAll('.bx').forEach(e => e.classList.remove('active'));
+  document.getElementById('drawer').style.display = 'none';
+}
+
+document.addEventListener('keydown', (e) => {
+  const t = e.target;
+  if (t && t.classList && t.classList.contains('bx') && (e.key === 'Enter' || e.key === ' ')) {
+    e.preventDefault();
+    t.click();
+  }
+  if (e.key === 'Escape' && curId) closeDrawer();
+});
+</script>
+
+</body>
+</html>
