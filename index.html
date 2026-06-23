@@ -106,7 +106,15 @@ tr.clk{cursor:pointer}tr.clk:hover td{background:var(--panel2)}tr.sel td{backgro
 .eqrow{align-items:stretch}
 .eqrow>.card{display:flex;flex-direction:column;margin-bottom:0}
 .eqrow .chartbox.sm{height:auto;flex:1 1 auto;min-height:250px}
-.card.sp{margin-top:16px}
+.card.sp,.row2.sp,.row3.sp,.sp{margin-top:16px}
+.sidefilter{margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.09);display:flex;flex-direction:column;gap:9px}
+.sidefilter .sf-title{font-size:10.5px;letter-spacing:1px;color:#7d92b4;font-weight:600}
+.sidefilter .grp{display:flex;flex-direction:column;gap:4px}
+.sidefilter label{font-size:11px;color:#8ea2c2}
+.sidefilter select{background:rgba(255,255,255,.06);color:#e8eef7;border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:7px 9px;font:inherit;font-size:12.5px;cursor:pointer}
+.sidefilter select option{color:#0f1d31}
+.sidefilter .reset{margin-top:2px;background:rgba(255,255,255,.05);color:#bccbe3;border:1px solid rgba(255,255,255,.14);border-radius:8px;padding:7px;font:inherit;font-size:12px;cursor:pointer;text-align:center}
+.sidefilter .reset:hover{border-color:#5b9bff;color:#fff}
 .scrolly{max-height:360px;overflow:auto;border:1px solid var(--border);border-radius:10px}
 .scrolly table{margin:0}
 .scrolly thead th{position:sticky;top:0;background:var(--panel2);z-index:2}
@@ -135,6 +143,7 @@ a.olink:hover{text-decoration:underline}a.olink .ar{font-size:10px;opacity:.7}
   <aside class="side">
     <div class="brand">KO<b>MEX</b><div class="sub">Vận hành &amp; sau bán hàng</div></div>
     <nav id="nav"></nav>
+    <div class="sidefilter" id="sidefilter"></div>
     <div class="sidefoot">
       <span class="chip" id="srcChip" title="Đang chạy dữ liệu minh hoạ"><span class="dot" id="srcDot"></span><span id="srcTxt">Dữ liệu minh hoạ</span></span>
       <span class="chip" id="cfgBtn" title="Dán liên kết Apps Script /exec để chạy dữ liệu thật">⚙ Nguồn dữ liệu</span>
@@ -142,7 +151,7 @@ a.olink:hover{text-decoration:underline}a.olink .ar{font-size:10px;opacity:.7}
     </div>
   </aside>
   <main class="main">
-    <div class="topbar"><h1 id="ptitle">Tổng quan vận hành</h1><span class="htitle">Bảng điều hành vận hành &amp; sau bán hàng · Komex</span></div>
+    <div class="topbar"><h1 id="ptitle">Tổng quan vận hành</h1><span class="htitle">Bảng điều hành vận hành &amp; sau bán hàng · Komex</span><div class="fbanner" id="fbanner" style="margin-left:auto"></div></div>
     <h2 class="sr">Bảng điều hành Komex cho ban lãnh đạo: tổng quan vận hành, hoàn trả &amp; bảo hành, khiếu nại, đánh giá khách hàng.</h2>
     <section class="page on" id="pg-1"></section>
     <section class="page" id="pg-2"></section>
@@ -446,15 +455,20 @@ function orderLink(code,plat){plat=plat||((code||"").indexOf("TT")>=0?"TikTok":"
 function big(n){return n>=1000000?(n/1000000).toFixed(1)+"tr":n>=1000?(Math.round(n/100)/10)+"k":vi(n);}
 function shopsByChan(){return D.shops.filter(function(s){return GF.chan==="Tất cả"||s.plat===GF.chan;});}
 
-function filterBar(){
+function buildSideFilter(){
   var times=["7 ngày","30 ngày","Tháng này","90 ngày"], chans=["Tất cả","Shopee","TikTok","Website"];
   var shopOpts=['Tất cả'].concat(D.shops.map(function(s){return s.name;}));
-  return'<div class="fbar">'+
+  var sf=document.getElementById('sidefilter');if(!sf)return;
+  sf.innerHTML=
+    '<div class="sf-title">BỘ LỌC</div>'+
     '<div class="grp"><label>Thời gian</label><select id="fTime">'+times.map(function(t){return'<option'+(t===GF.time?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'+
     '<div class="grp"><label>Kênh</label><select id="fChan">'+chans.map(function(c){return'<option'+(c===GF.chan?' selected':'')+'>'+c+'</option>';}).join('')+'</select></div>'+
     '<div class="grp"><label>Gian hàng</label><select id="fShop">'+shopOpts.map(function(s){return'<option'+(s===GF.shop?' selected':'')+'>'+s+'</option>';}).join('')+'</select></div>'+
-    '<button class="reset" id="fReset">↺ Đặt lại</button></div>'+
-    '<div class="fbanner" id="fbanner"></div>';
+    '<button class="reset" id="fReset">↺ Đặt lại bộ lọc</button>';
+  var ft=document.getElementById('fTime');if(ft)ft.addEventListener('change',function(){GF.time=ft.value;go(CUR);});
+  var fc=document.getElementById('fChan');if(fc)fc.addEventListener('change',function(){GF.chan=fc.value;go(CUR);});
+  var fs=document.getElementById('fShop');if(fs)fs.addEventListener('change',function(){GF.shop=fs.value;go(CUR);});
+  var fr=document.getElementById('fReset');if(fr)fr.addEventListener('click',resetAll);
 }
 
 /* ===== TRANG 1 ===== */
@@ -496,18 +510,18 @@ function render1(){
         '<tr class="trd" id="trd-'+i+'"><td colspan="8"><div class="detgrid">'+det+'</div></td></tr>';
     }).join('')+'</tbody></table>';
 
-  document.getElementById('pg-1').innerHTML=filterBar()+
+  document.getElementById('pg-1').innerHTML=
     kpiGrid(k)+
     '<div class="row3 eqrow">'+
       '<div class="card nm"><div class="chead"><div><h3>Chỉ số có nhiều gian hàng báo động</h3><p class="cap">Số gian hàng báo động (đỏ) và làm chưa tốt (vàng) theo từng chỉ số.</p></div></div><div class="chartbox sm"><canvas id="cFlags"></canvas></div></div>'+
       '<div class="card nm"><div class="chead"><div><h3>Khoảng cách tới ngưỡng sàn</h3><p class="cap">Top 5 chỉ số sắp chạm ngưỡng. Vạch cam = mục tiêu · vạch đỏ = ngưỡng xử lý mạnh.</p></div></div>'+near+'</div>'+
       '<div class="card nm"><div class="chead"><div><h3>Xu hướng chỉ số sàn</h3><p class="cap">Chọn chỉ số theo từng sàn. Đường mục tiêu (xanh) · vùng cảnh báo (đỏ).</p></div>'+opsSel+'</div><div class="chartbox sm"><canvas id="c1Trend"></canvas></div></div>'+
     '</div>'+
-    '<div class="card nm acard"><div class="chead"><div><h3>⚠ Cảnh báo cần khắc phục ngay</h3><p class="cap">Gộp chỉ số báo động và vi phạm: điểm phạt, biện pháp sàn, quyền lợi bị ảnh hưởng, hạn xử lý &amp; việc cần làm. Bấm dòng để lọc theo gian hàng.</p></div></div>'+alert+'</div>'+
-    '<div class="card nm"><div class="chead"><div><h3>Ma trận sức khỏe gian hàng</h3><p class="cap">Điểm chuẩn hoá 0–100 từ các chỉ số sàn (có trọng số). Bấm một gian hàng để lọc toàn trang.</p></div></div>'+
+    '<div class="card nm acard sp"><div class="chead"><div><h3>⚠ Cảnh báo cần khắc phục ngay</h3><p class="cap">Gộp chỉ số báo động và vi phạm: điểm phạt, biện pháp sàn, quyền lợi bị ảnh hưởng, hạn xử lý &amp; việc cần làm. Bấm dòng để lọc theo gian hàng.</p></div></div>'+alert+'</div>'+
+    '<div class="card nm sp"><div class="chead"><div><h3>Ma trận sức khỏe gian hàng</h3><p class="cap">Điểm chuẩn hoá 0–100 từ các chỉ số sàn (có trọng số). Bấm một gian hàng để lọc toàn trang.</p></div></div>'+
       '<div class="scrolly"><table><thead><tr><th>Gian hàng</th><th class="num">Tổng</th>'+D.dimNames.map(function(d){return'<th class="num">'+d+'</th>';}).join('')+'</tr></thead><tbody>'+matRows+matTot+'</tbody></table></div>'+
       '<div class="legend"><span><i style="background:var(--success-s)"></i>≥85 Xanh</span><span><i style="background:var(--warning-s)"></i>70–84 Vàng</span><span><i style="background:var(--danger-s)"></i>&lt;70 Đỏ</span></div></div>'+
-    '<div class="card nm"><div class="chead"><div><h3>Hạng &amp; trạng thái gian hàng theo sàn</h3><p class="cap">Shopee Mall / Yêu Thích / Sao Quả Tạ · TikTok Mall — theo quy định từng sàn. Bấm một dòng để bung bộ chỉ số chi tiết của gian hàng.</p></div></div><div class="scrolly">'+tier+'</div></div>';
+    '<div class="card nm sp"><div class="chead"><div><h3>Hạng &amp; trạng thái gian hàng theo sàn</h3><p class="cap">Shopee Mall / Yêu Thích / Sao Quả Tạ · TikTok Mall — theo quy định từng sàn. Bấm một dòng để bung bộ chỉ số chi tiết của gian hàng.</p></div></div><div class="scrolly">'+tier+'</div></div>';
 }
 function chart1Trend(){
   var el=document.getElementById('c1Trend');if(!el)return;destroy('c1Trend');
@@ -537,7 +551,7 @@ function renderReviews(){
   function topTbl(arr,h1){return'<table><thead><tr><th>'+h1+'</th><th class="num">1 sao</th><th class="num">Tỷ lệ</th><th>Xu hướng</th><th>Chủ đề chính</th><th>Đề xuất</th></tr></thead><tbody>'+arr.map(function(t){var sp=REV.spike.indexOf(t.obj)>=0?' <span class="tag r">⚠ Đột biến</span>':'';return'<tr class="clk" data-act="topic" data-topic="'+t.topic+'"><td>'+t.obj+sp+'</td><td class="num">'+t.one+'</td><td class="num">'+t.rate+'</td><td>'+t.tr+'</td><td>'+t.topic+'</td><td><span class="tag '+t.tg+'">'+t.rec+'</span></td></tr>';}).join('')+'</tbody></table>';}
   var fd='<table><thead><tr><th>Ngày</th><th>Mã đơn</th><th class="num">Sao</th><th>Sản phẩm</th><th>Chủ đề</th><th>Trạng thái xử lý</th><th>Hạn</th></tr></thead><tbody>'+
     REV.recent.map(function(r){return'<tr class="clk" data-act="topic" data-topic="'+r.topic+'"><td>'+r.date+'</td><td>'+orderLink(r.order)+'</td><td class="num"><span class="rv-st '+(r.star===1?"r":"y")+'">'+r.star+'★</span></td><td>'+r.obj+'</td><td>'+r.topic+'</td><td><span class="tag '+r.sl+'">'+r.st+'</span></td><td>'+r.due+'</td></tr>';}).join('')+'</tbody></table>';
-  document.getElementById('pg-2').innerHTML=filterBar()+
+  document.getElementById('pg-2').innerHTML=
     kpiGrid(REV.kpi)+
     '<div class="row2 even eqrow">'+
       '<div class="card nm"><div class="chead"><div><h3>Phân bố sao</h3><p class="cap">Tỷ trọng từng mức sao trên tổng đánh giá.</p></div></div>'+sd+'</div>'+
@@ -581,7 +595,7 @@ var HM_TAB="kn";
 function render3(){
   function tab(v,l){return'<span class="'+(HM_TAB===v?"on":"")+'" data-hm="'+v+'">'+l+'</span>';}
   var body=HM_TAB==="rt"?rtContent():HM_TAB==="wt"?wtContent():knContent();
-  document.getElementById('pg-3').innerHTML=filterBar()+
+  document.getElementById('pg-3').innerHTML=
     '<div class="subtabs">'+tab("kn","Khiếu nại")+tab("rt","Hoàn trả")+tab("wt","Bảo hành")+'</div>'+
     '<div id="hmBody">'+body+'</div>';
 }
@@ -616,7 +630,7 @@ function rtContent(){
     '<div class="card nm"><div class="chead"><div><h3>Thời gian xử lý với khách</h3><p class="cap">Số giờ trung bình tính từ lúc tiếp nhận đến từng bước · trung bình <b>18 giờ</b> tới khi giải quyết, đúng hạn '+D.custTime.sla+'%.</p></div></div>'+
       '<div class="chartbox sm"><canvas id="c3Cust"></canvas></div>'+
       '<div style="font-size:12px;margin-top:8px"><span class="tag g">Đúng hạn '+D.custTime.sla+'%</span> <span class="tag r" style="margin-left:6px">'+D.custTime.over+' vụ quá hạn</span></div></div>'+
-    '<div class="card nm"><div class="chead"><div><h3>Danh sách đơn hoàn trả</h3><p class="cap">Bấm mã đơn để mở trực tiếp trên Shopee / TikTok Shop.</p></div></div>'+caseTable(D.caseLog["return"])+'</div>';
+    '<div class="card nm sp"><div class="chead"><div><h3>Danh sách đơn hoàn trả</h3><p class="cap">Bấm mã đơn để mở trực tiếp trên Shopee / TikTok Shop.</p></div></div>'+caseTable(D.caseLog["return"])+'</div>';
 }
 function wtContent(){
   var kpi=[
@@ -656,7 +670,7 @@ function knContent(){
   var clTodo=D.claims.filter(function(x){return x.st==="Chưa xử lý";}).length;
   return kpiGrid(kpi)+
     twoTrackCard()+
-    '<div class="row2 even eqrow">'+
+    '<div class="row2 even eqrow sp">'+
       '<div class="card nm"><div class="chead"><div><h3>Phễu khiếu nại với sàn</h3><p class="cap">Đủ điều kiện → gửi → phán quyết → nhận tiền. Nút Số đơn / Giá trị đơn áp dụng cho cả phễu và kết quả phán quyết.</p></div>'+
         '<div class="tg" id="cfTg"><span class="on" data-cf="count">Số đơn</span><span data-cf="value">Giá trị đơn</span></div></div>'+
         '<div id="claimFunnel"></div></div>'+
@@ -790,7 +804,7 @@ function setFilter(type,val){
   else { if(FILTER.type===type&&FILTER.value===val)FILTER={type:null,value:null}; else FILTER={type:type,value:val}; }
   go(CUR);
 }
-function resetAll(){ GF={time:"30 ngày",chan:"Tất cả",shop:"Tất cả"}; FILTER={type:null,value:null}; go(CUR); }
+function resetAll(){ GF={time:"30 ngày",chan:"Tất cả",shop:"Tất cả"}; FILTER={type:null,value:null}; buildSideFilter(); go(CUR); }
 function renderBanner(){
   var b=document.getElementById('fbanner');if(!b)return;
   var parts=[];
@@ -829,10 +843,6 @@ function buildNav(){
   Array.prototype.forEach.call(document.querySelectorAll('#nav button'),function(b){b.addEventListener('click',function(){go(b.getAttribute('data-id'));});});
 }
 function bindControls(){
-  var ft=document.getElementById('fTime');if(ft)ft.addEventListener('change',function(){GF.time=ft.value;go(CUR);});
-  var fc=document.getElementById('fChan');if(fc)fc.addEventListener('change',function(){GF.chan=fc.value;go(CUR);});
-  var fs=document.getElementById('fShop');if(fs)fs.addEventListener('change',function(){GF.shop=fs.value;go(CUR);});
-  var fr=document.getElementById('fReset');if(fr)fr.addEventListener('click',resetAll);
   Array.prototype.forEach.call(document.querySelectorAll('[data-act]'),function(el){el.addEventListener('click',function(){var t=el.getAttribute('data-act');setFilter(t,el.getAttribute('data-'+t));});});
   Array.prototype.forEach.call(document.querySelectorAll('.kpi.clk'),function(el){el.addEventListener('click',function(){GF.shop="Tất cả";FILTER={type:null,value:null};alert("Lọc nhanh: hiển thị các gian hàng rủi ro (minh hoạ). Dùng ô Kênh/Gian hàng để lọc chi tiết.");});});
   var os=document.getElementById('opsSel');if(os)os.addEventListener('change',chart1Trend);
@@ -871,5 +881,5 @@ document.getElementById('cfgBtn').addEventListener('click',function(){var u=prom
 document.getElementById('srcChip').addEventListener('click',function(){alert(this.title);});
 
 Chart.defaults.color="#5b6675";Chart.defaults.borderColor="#e6eaf1";Chart.defaults.font.family="Inter, system-ui, Arial, sans-serif";
-buildNav();go("1");load();
+buildNav();buildSideFilter();go("1");load();
 </script>
